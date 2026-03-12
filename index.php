@@ -6,7 +6,7 @@ require_once 'config/db.php';
 $totalPhones = $database->count('phones');
 $totalTemplates = $database->count('phone_templates');
 $totalLogsToday = $database->count('logs', ['created_at[>=]' => date('Y-m-d 00:00:00')]);
-$activeProfile = $database->get('profiles', 'name', ['is_active' => 1]);
+
 
 // Определяем базовый URL текущего сайта
 $baseUrl = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
