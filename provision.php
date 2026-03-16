@@ -4,6 +4,8 @@ use Medoo\Medoo;
 
 require_once 'config/db.php';
 
+
+
 /**
  * Парсит лог запроса автопровижена и возвращает MAC, модель и прошивку
  * (код из вашего файла, без изменений)
@@ -114,9 +116,11 @@ $parseData = parseProvisioningRequest($requestData);
 
 
 $addData = "";
+$IS_TEST  = false;
 if(isset($_GET["test"])){
     $parseData['mac'] = $_GET["test"];
     $addData = "[Тестовое обращение]";
+    $IS_TEST = true;
 }
 
 if (!is_null($parseData["model"]))
@@ -162,16 +166,31 @@ $macFormatted = implode(':', str_split($macRaw, 2));
 // Ищем телефон
 $phone = $database->get('phones', '*', ['mac' => $macRaw]);
 
-if (!$phone && !isset($_GET["test"])) {
+if (!$phone){
     // Телефон не зарегистрирован, но шаблон есть
-    $database->insert('unknown_requests', [
-        'mac' => $macFormatted,
-        'oui' => $oui,
-        'ip' => $ip,
-        'user_agent' => $userAgent,
-        'template_id' => $template['id'],
-        'created_at' => date('Y-m-d H:i:s')
-    ], 'REPLACE'); // Третий параметр 'REPLACE' заставляет Medoo выполнить REPLACE INTO
+    if(!$IS_TEST)
+        $database->insert('unknown_requests', [
+            'mac' => $macFormatted,
+            'oui' => $oui,
+            'ip' => $ip,
+            'user_agent' => $userAgent,
+            'template_id' => $template['id'],
+            'created_at' => date('Y-m-d H:i:s')
+        ], 'REPLACE'); // Третий параметр 'REPLACE' заставляет Medoo выполнить REPLACE INTO
+
+    if($template["default_template_is_enabled"]){
+        $database->insert('logs', [
+            'mac' => $macFormatted,
+            'ip' => $ip,
+            'user_agent' => $userAgent,
+            'textinfo' => "Телефон не найден, но шаблон есть. Включен дефолтный шаблон, отдаем дефолтный шаблон." . $addData,
+            'request_info' => $requestData
+        ]);
+        // Отдаём результат
+        header('Content-Type: text/plain; charset=utf-8');
+        echo $template["default_template_content"];
+        die;
+    }
 
     $database->insert('logs', [
         'mac' => $macFormatted,
@@ -195,10 +214,12 @@ $database->insert('logs', [
 ]);
 
 // Обновляем IP телефона
-$database->update('phones', ['ip' => $ip], ['id' => $phone['id']]);
-$database->update('phones', [
-    'last_request' => Medoo::raw('CURRENT_TIMESTAMP')
-], ['id' => $phone['id']]);
+if(!$IS_TEST) {
+    $database->update('phones', ['ip' => $ip], ['id' => $phone['id']]);
+    $database->update('phones', [
+        'last_request' => Medoo::raw('CURRENT_TIMESTAMP')
+    ], ['id' => $phone['id']]);
+}
 
 // Получаем все поля профиля с учётом наследования
 $profileFields = getProfileFields($database, $phone['profile_id']);
