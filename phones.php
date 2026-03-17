@@ -85,9 +85,15 @@ $phones = $database->select('phones', [
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4>Телефоны</h4>
-        <a href="phone_edit.php" class="btn btn-primary">
-            <i class="material-icons align-middle">add</i> Добавить телефон
-        </a>
+        <div>
+            <a href="import_phones.php" class="btn btn-success ms-2">
+                <i class="material-icons align-middle">upload</i> Импорт из XLSX
+            </a>
+            <a href="phone_edit.php" class="btn btn-primary">
+                <i class="material-icons align-middle">add</i> Добавить телефон
+            </a>
+        </div>
+
     </div>
 
     <!-- Фильтр -->

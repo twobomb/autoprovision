@@ -4,7 +4,10 @@ use Medoo\Medoo;
 
 require_once 'config/db.php';
 
-
+//Удалить логи старше 6 месяцев
+$database->delete('logs', [
+    'created_at[<]' => Medoo::raw('DATE_SUB(NOW(), INTERVAL 6 MONTH)')
+]);
 
 /**
  * Парсит лог запроса автопровижена и возвращает MAC, модель и прошивку
@@ -168,7 +171,7 @@ $phone = $database->get('phones', '*', ['mac' => $macRaw]);
 
 if (!$phone){
     // Телефон не зарегистрирован, но шаблон есть
-    if(!$IS_TEST)
+    if(!$IS_TEST && $database->count("unknown_requests",["mac"=>$macFormatted]) == 0)
         $database->insert('unknown_requests', [
             'mac' => $macFormatted,
             'oui' => $oui,
@@ -176,7 +179,7 @@ if (!$phone){
             'user_agent' => $userAgent,
             'template_id' => $template['id'],
             'created_at' => date('Y-m-d H:i:s')
-        ], 'REPLACE'); // Третий параметр 'REPLACE' заставляет Medoo выполнить REPLACE INTO
+        ]);
 
     if($template["default_template_is_enabled"]){
         $database->insert('logs', [

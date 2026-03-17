@@ -25,17 +25,14 @@
 
 * **Friendly** - Integrates seamlessly with Laravel, CodeIgniter, Yii, Slim, and other PHP frameworks.
 
-* **Free** - Licensed under MIT, free to use for any purpose.
+* **Free** - Licensed under MIT, completely free to use for any purpose.
 
 ## Requirements
-
 - PHP 7.3 or later
 - PDO extension enabled
 
 ## Get Started
-
 ### Install via composer
-
 Add Medoo to the `composer.json` configuration file.
 ```bash
 $ composer require catfan/medoo
@@ -101,20 +98,17 @@ Each commit should begin with a tag indicating the type of change:
 Keep contributions simple and well-documented.
 
 ## License
-
-Medoo is released under the MIT License.
+Medoo is released under the [MIT](https://opensource.org/licenses/MIT) License.
 
 ## Links
-
 * Official website: [https://medoo.in](https://medoo.in)
-
 * Documentation: [https://medoo.in/doc](https://medoo.in/doc)
-
-* Twitter: [https://twitter.com/MedooPHP](https://twitter.com/MedooPHP)
-
+* X.com: [https://x.com/MedooPHP](https://x.com/MedooPHP)
 * Open Collective: [https://opencollective.com/medoo](https://opencollective.com/medoo)
 
-## Support Our Other Product
-[Gear Browser - Web Browser for Geek](https://gear4.app)
+## [More Products We Build]
+### Gear Browser - AI Extension Web Browser
+- [Website](https://gear4.app)
+- [App Store](https://apps.apple.com/us/app/id1458962238)
 
-[![Gear Browser](https://github.com/catfan/Medoo/assets/1467904/bc5059d4-6a2d-4bbf-90d9-a9f71bae3335)](https://gear4.app)
+[![Gear Browser](https://github.com/user-attachments/assets/9dfaf39e-8e79-4ef2-b2dd-f7af87a729c0)](https://gear4.app)

@@ -6,7 +6,7 @@ declare(strict_types=1);
  *
  * The Lightweight PHP Database Framework to Accelerate Development.
  *
- * @version 2.2.0
+ * @version 2.2.1
  * @package Medoo
  * @author Angel Lai
  * @copyright Angel Lai
@@ -49,24 +49,22 @@ class Raw
  * @method mixed select(string $table, string $column, array $where)
  * @method array select(string $table, array $join, array $columns)
  * @method mixed select(string $table, array $join, string $column)
+ * @method array select(string $table, array $join, array $columns, array $where)
+ * @method mixed select(string $table, array $join, string $column, array $where)
  * @method null select(string $table, array $columns, callable $callback)
  * @method null select(string $table, string $column, callable $callback)
  * @method null select(string $table, array $columns, array $where, callable $callback)
  * @method null select(string $table, string $column, array $where, callable $callback)
  * @method null select(string $table, array $join, array $columns, array $where, callable $callback)
  * @method null select(string $table, array $join, string $column, array $where, callable $callback)
- * @method mixed get(string $table, array|string $columns, array $where)
- * @method bool has(string $table, array $where)
- * @method mixed rand(string $table, array|string $column, array $where)
- * @method int count(string $table, array $where)
- * @method string max(string $table, string $column)
- * @method string min(string $table, string $column)
- * @method string avg(string $table, string $column)
- * @method string sum(string $table, string $column)
- * @method string max(string $table, string $column, array $where)
- * @method string min(string $table, string $column, array $where)
- * @method string avg(string $table, string $column, array $where)
- * @method string sum(string $table, string $column, array $where)
+ * @method mixed get(string $table, array|null $join = null, array|string|null $columns = null, array|null $where = null)
+ * @method bool has(string $table, array $join, array|null $where = null)
+ * @method array rand(string $table, array|null $join = null, array|string|null $columns = null, array|null $where = null)
+ * @method int|null count(string $table, array|null $join = null, string|null $column = null, array|null $where = null)
+ * @method string|null max(string $table, array|null $join = null, string|null $column = null, array|null $where = null)
+ * @method string|null min(string $table, array|null $join = null, string|null $column = null, array|null $where = null)
+ * @method string|null avg(string $table, array|null $join = null, string|null $column = null, array|null $where = null)
+ * @method string|null sum(string $table, array|null $join = null, string|null $column = null, array|null $where = null)
  */
 class Medoo
 {
@@ -1166,7 +1164,13 @@ class Medoo
                             $valueStack = [];
 
                             foreach ($value as $item) {
-                                $valueStack[] = is_int($item) ? $item : $this->quote($item);
+                                if (is_int($item)) {
+                                    $valueStack[] = $item;
+                                } else {
+                                    $fieldKey = $this->mapKey();
+                                    $valueStack[] = $fieldKey;
+                                    $map[$fieldKey] = [$item, PDO::PARAM_STR];
+                                }
                             }
 
                             $valueString = implode(',', $valueStack);
@@ -1690,7 +1694,7 @@ class Medoo
             $currentStack = [];
 
             if (isset($callback)) {
-                $this->dataMap($data, $columns, $columnMap, $currentStack, true);
+                $this->dataMap($data, $columns ?? [], $columnMap, $currentStack, true);
 
                 $callback(
                     $isSingle ?
@@ -1698,7 +1702,7 @@ class Medoo
                     $currentStack
                 );
             } else {
-                $this->dataMap($data, $columns, $columnMap, $currentStack, true, $result);
+                $this->dataMap($data, $columns ?? [], $columnMap, $currentStack, true, $result);
             }
         }
 

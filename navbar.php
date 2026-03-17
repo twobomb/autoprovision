@@ -12,6 +12,7 @@
                 <li class="nav-item"><a class="nav-link" href="requests.php">Запросы</a></li>
                 <li class="nav-item"><a class="nav-link" href="logs.php">Логи</a></li>
                 <li class="nav-item"><a class="nav-link" href="departments.php">Подразделения</a></li>
+                <li class="nav-item"><a class="nav-link" href="help.php"><i class="material-icons">help</i></a></li>
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="logout.php">Выйти</a></li>
